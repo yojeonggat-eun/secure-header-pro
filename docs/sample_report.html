@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Security Headers Report - github.com</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .grade-box {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 8px;
+            background-color: #ffc107;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 18px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .section {
+            margin-top: 40px;
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Security Headers Report</h1>
+        <p><strong>Target:</strong> github.com</p>
+        <p><strong>Final URL:</strong> https://github.com</p>
+        <div class="grade-box">Grade: C &nbsp;|&nbsp; Score: 65/100</div>
+    </div>
+
+    <div class="section">
+        <h2>Detailed Analysis</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Header</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr>
+            <td>Hsts</td>
+            <td style="color: #28a745; font-weight: bold;">Good</td>
+            <td>HSTS is present | Good max-age (&gt;= 1 year) | includeSubDomains present</td>
+        </tr>
+        
+        <tr>
+            <td>Csp</td>
+            <td style="color: #ffc107; font-weight: bold;">Weak</td>
+            <td>CSP is present | Contains &#x27;unsafe-inline&#x27; (bad)</td>
+        </tr>
+        
+        <tr>
+            <td>X-Frame-Options</td>
+            <td style="color: #28a745; font-weight: bold;">Good</td>
+            <td>X-Frame-Options is set to deny</td>
+        </tr>
+        
+        <tr>
+            <td>X-Content-Type-Options</td>
+            <td style="color: #28a745; font-weight: bold;">Good</td>
+            <td>X-Content-Type-Options is correctly set to nosniff</td>
+        </tr>
+        
+        <tr>
+            <td>Referrer-Policy</td>
+            <td style="color: #28a745; font-weight: bold;">Good</td>
+            <td>Referrer-Policy is good: origin-when-cross-origin, strict-origin-when-cross-origin</td>
+        </tr>
+        
+        <tr>
+            <td>Permissions-Policy</td>
+            <td style="color: #dc3545; font-weight: bold;">Missing</td>
+            <td>Permissions-Policy is missing</td>
+        </tr>
+        
+        <tr>
+            <td>Cross-Origin-Opener-Policy</td>
+            <td style="color: #dc3545; font-weight: bold;">Missing</td>
+            <td>Cross-Origin-Opener-Policy is missing</td>
+        </tr>
+        
+        <tr>
+            <td>Cross-Origin-Resource-Policy</td>
+            <td style="color: #dc3545; font-weight: bold;">Missing</td>
+            <td>Cross-Origin-Resource-Policy is missing</td>
+        </tr>
+        
+        <tr>
+            <td>Cross-Origin-Embedder-Policy</td>
+            <td style="color: #dc3545; font-weight: bold;">Missing</td>
+            <td>Cross-Origin-Embedder-Policy is missing</td>
+        </tr>
+        
+        <tr>
+            <td>X-Xss-Protection</td>
+            <td style="color: #28a745; font-weight: bold;">Good</td>
+            <td>X-XSS-Protection is 0 (recommended; legacy header, not scored)</td>
+        </tr>
+        
+        <tr>
+            <td>Server</td>
+            <td style="color: #28a745; font-weight: bold;">Present</td>
+            <td>Server header present (no version shown): github.com</td>
+        </tr>
+        
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>How to Fix (Nginx)</h2>
+        <p>Copy and paste the following configuration inside your Nginx <code>server { }</code> block:</p>
+        <pre># Nginx Security Headers Configuration
+# Add these lines inside your server { } block
+# NOTE: test before deploying. A strict CSP, COEP and CORP can break pages that load
+# third-party scripts, images or embeds. Treat the values below as a starting point.
+
+add_header Permissions-Policy &quot;camera=(), microphone=(), geolocation=()&quot; always;
+add_header Cross-Origin-Opener-Policy &quot;same-origin&quot; always;
+add_header Cross-Origin-Resource-Policy &quot;same-origin&quot; always;
+add_header Cross-Origin-Embedder-Policy &quot;require-corp&quot; always;
+# CSP contains unsafe directives: review it manually (not auto-generated).</pre>
+    </div>
+
+    <div class="section">
+        <h2>How to Fix (Apache)</h2>
+        <p>Copy and paste the following configuration in your <code>.htaccess</code> file or VirtualHost:</p>
+        <pre># Apache Security Headers Configuration
+# Add these lines in your .htaccess or VirtualHost
+# NOTE: test before deploying. A strict CSP, COEP and CORP can break pages that load
+# third-party scripts, images or embeds. Treat the values below as a starting point.
+
+Header always set Permissions-Policy &quot;camera=(), microphone=(), geolocation=()&quot;
+Header always set Cross-Origin-Opener-Policy &quot;same-origin&quot;
+Header always set Cross-Origin-Resource-Policy &quot;same-origin&quot;
+Header always set Cross-Origin-Embedder-Policy &quot;require-corp&quot;
+# CSP contains unsafe directives: review it manually (not auto-generated).</pre>
+    </div>
+
+    <div class="footer">
+        Report generated by <strong>SecureHeaderPro</strong> on 2026-11-18 15:59:09
+    </div>
+</body>
+</html>

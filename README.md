@@ -32,7 +32,13 @@ Many websites still ship with missing or weak security headers. SecureHeaderPro 
 
 ## Demo
 
+Sample scan of `github.com`, taken on 18 Nov 2026. Results change as sites change their headers.
 
+![Sample report for github.com](docs/screenshot.png)
+
+Full report: [docs/sample_report.html](docs/sample_report.html) (download it and open it in a browser; GitHub shows HTML files as source code).
+
+---
 ## Installation
 
 ```bash
@@ -88,6 +94,7 @@ Each header has a fixed weight. The weights add up to exactly **100**.
 **Grades**  
 A+ ≥ 95 · A ≥ 85 · B ≥ 70 · C ≥ 55 · D ≥ 40 · F < 40
 
+> **Note:** The weights and thresholds are my own heuristic, not an industry standard. Scores will differ from tools such as securityheaders.com or Mozilla Observatory, which use different checks and weights.
 ---
 
 ## Security notes
