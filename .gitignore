@@ -1,0 +1,27 @@
+# Virtual environment
+venv/
+env/
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Generated scan reports (run the tool to create them)
+reports/
+
+# Keep curated sample output for the README
+!docs/
+!docs/*.html
+!docs/*.png
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
