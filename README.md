@@ -152,6 +152,6 @@ secure-header-pro/
 
 ## Author
 
-Built as a learning / portfolio project by a 6th-semester Computer Science student interested in Application Security.
+Built as a learning project.
 
 Feedback and suggestions are welcome.
