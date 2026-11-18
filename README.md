@@ -24,8 +24,8 @@ Many websites still ship with missing or weak security headers. SecureHeaderPro 
 - Detects common weaknesses (low HSTS max-age, `unsafe-inline` / `unsafe-eval` in CSP, weak Referrer-Policy, version disclosure in Server header, etc.)
 - Generates **Nginx and Apache** configuration snippets for missing *and* weak headers
 - Saves timestamped **HTML + text reports** in a `reports/` folder
-- Report generation is **XSS-safe** — all untrusted header values are properly escaped
-- Non-zero exit code on failure (usable in scripts / CI)
+- Report generation **HTML-escapes** header values from the scanned site before writing them into the HTML report
+- Non-zero exit code if the scan itself fails (for example, the site can't be reached). The exit code does not depend on the grade.
 - Unit tests covering analysis, scoring, config generation, and report escaping
 
 ---
@@ -102,7 +102,7 @@ A+ ≥ 95 · A ≥ 85 · B ≥ 70 · C ≥ 55 · D ≥ 40 · F < 40
 This tool was written with secure coding practices in mind:
 
 - All untrusted data coming from the scanned website (header values, URLs) is **HTML-escaped** before being written into reports → prevents XSS in the generated HTML.
-- CLI output also escapes Rich markup to avoid terminal injection.
+- CLI output escapes Rich markup in values taken from the scanned site.
 - Generated configs are intentionally conservative. A strict CSP / COEP / CORP can break legitimate third-party resources — always test before deploying.
 
 **Responsible use**  
@@ -115,6 +115,10 @@ Only scan websites you own or have explicit permission to test. The tool only pe
 - Only inspects the final response after redirects. Does not currently verify the HTTP → HTTPS redirect itself.
 - CSP analysis is intentionally basic (flags `unsafe-inline` / `unsafe-eval`). It does not yet do full directive-level analysis or treat `frame-ancestors` as a full replacement for X-Frame-Options.
 - Generated configuration is a **starting point**, not a production-ready hardened policy.
+- The tool makes a single GET request, and headers can differ by page, cookies or User-Agent.
+- The CSP check is a plain text match for `unsafe-inline` and `unsafe-eval`. It does not understand nonces or `strict-dynamic`, so it can report false positives.
+- Permissions-Policy and the three Cross-Origin headers are scored on presence only, not on their values.
+- The Server header check treats any digit in the value as a version number, so it can misjudge unusual values.
 
 ---
 
@@ -136,7 +140,7 @@ secure-header-pro/
 │   ├── analyzer.py     # Value-aware analysis of each header
 │   ├── scoring.py      # Weights, score calculation, grading
 │   ├── generator.py    # Nginx & Apache config generation
-│   ├── report.py       # HTML + text report generation (XSS-safe)
+│   ├── report.py       # HTML + text report generation (escapes header values)
 │   └── cli.py          # Typer + Rich command-line interface
 ├── tests/              # Unit tests (pytest)
 ├── requirements.txt
